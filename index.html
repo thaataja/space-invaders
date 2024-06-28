@@ -2,12 +2,17 @@
 <html>
 <head>
     <title>Space Invaders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <style>
-        body { margin: 0; 
-              overflow: hidden;
-             }
-        
-        canvas { display: block; background: black; }
+        body { 
+            margin: 0; 
+            overflow: hidden; /* Prevents scrolling */
+            touch-action: none; /* Disables touch interactions like scrolling and zooming */
+        }
+        canvas { 
+            display: block; 
+            background: black; 
+        }
     </style>
 </head>
 <body>
