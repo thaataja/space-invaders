@@ -1,8 +1,13 @@
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+resizeCanvas(); // Initial resize
+window.addEventListener('resize', resizeCanvas);
 
 let player = {
     x: canvas.width / 2,
@@ -38,19 +43,15 @@ function handleTouchMove(event) {
     let touchMovedX = touch.clientX;
 
     if (touchMovedX < touchX) {
-        // Move left
         player.x -= player.speed;
     } else if (touchMovedX > touchX) {
-        // Move right
         player.x += player.speed;
     }
 
-    // Update touchX for next move
     touchX = touchMovedX;
 }
 
 function handleTouchEnd(event) {
-    // Shoot when touch ends
     bullets.push({ x: player.x + player.width / 2, y: player.y, width: 5, height: 10, color: 'red', speed: 7 });
 }
 
