@@ -76,7 +76,32 @@ function drawEnemies() {
 function moveEnemies() {
     enemies.forEach(enemy => {
         enemy.y += enemy.speed;
+        if (enemy.y + enemy.height > canvas.height) {
+            resetGame();
+        }
     });
+}
+
+function detectCollisions() {
+    bullets.forEach((bullet, bulletIndex) => {
+        enemies.forEach((enemy, enemyIndex) => {
+            if (bullet.x < enemy.x + enemy.width &&
+                bullet.x + bullet.width > enemy.x &&
+                bullet.y < enemy.y + enemy.height &&
+                bullet.y + bullet.height > enemy.y) {
+                bullets.splice(bulletIndex, 1);
+                enemies.splice(enemyIndex, 1);
+            }
+        });
+    });
+}
+
+function resetGame() {
+    player.x = canvas.width / 2;
+    player.y = canvas.height - 30;
+    bullets = [];
+    enemies = [];
+    initializeEnemies();
 }
 
 function update() {
@@ -97,7 +122,8 @@ function update() {
         }
     });
 
-    moveEnemies();
+    moveEnemies(); // Move enemies down
+    detectCollisions(); // Detect collisions
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawPlayer();
@@ -129,7 +155,7 @@ function initializeEnemies() {
                 width: enemyWidth,
                 height: enemyHeight,
                 color: 'green',
-                speed: 1
+                speed: 0.5 // Adjust speed for downward movement
             });
         }
     }
