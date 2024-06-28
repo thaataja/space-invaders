@@ -19,6 +19,7 @@ let player = {
 };
 
 let bullets = [];
+let enemies = [];
 let keys = {};
 let touchX = null;
 
@@ -33,6 +34,11 @@ document.addEventListener('keyup', (event) => {
 canvas.addEventListener('touchstart', handleTouchStart, false);
 canvas.addEventListener('touchmove', handleTouchMove, false);
 canvas.addEventListener('touchend', handleTouchEnd, false);
+
+// Prevent default touch actions
+canvas.addEventListener('touchstart', (event) => event.preventDefault(), { passive: false });
+canvas.addEventListener('touchmove', (event) => event.preventDefault(), { passive: false });
+canvas.addEventListener('touchend', (event) => event.preventDefault(), { passive: false });
 
 function handleTouchStart(event) {
     touchX = event.touches[0].clientX;
@@ -60,6 +66,19 @@ function drawPlayer() {
     context.fillRect(player.x, player.y, player.width, player.height);
 }
 
+function drawEnemies() {
+    enemies.forEach(enemy => {
+        context.fillStyle = enemy.color;
+        context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+    });
+}
+
+function moveEnemies() {
+    enemies.forEach(enemy => {
+        enemy.y += enemy.speed;
+    });
+}
+
 function update() {
     if (keys['ArrowLeft'] && player.x > 0) {
         player.x -= player.speed;
@@ -78,8 +97,11 @@ function update() {
         }
     });
 
+    moveEnemies();
+
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawPlayer();
+    drawEnemies();
     bullets.forEach(bullet => {
         context.fillStyle = bullet.color;
         context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
@@ -88,4 +110,30 @@ function update() {
     requestAnimationFrame(update);
 }
 
+function initializeEnemies() {
+    const rows = 3;
+    const cols = 8;
+    const enemyWidth = 20;
+    const enemyHeight = 20;
+    const padding = 10;
+    const offsetTop = 30;
+    const offsetLeft = 30;
+
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            let enemyX = col * (enemyWidth + padding) + offsetLeft;
+            let enemyY = row * (enemyHeight + padding) + offsetTop;
+            enemies.push({
+                x: enemyX,
+                y: enemyY,
+                width: enemyWidth,
+                height: enemyHeight,
+                color: 'green',
+                speed: 1
+            });
+        }
+    }
+}
+
+initializeEnemies();
 update();
